@@ -16,6 +16,8 @@ from fastapi import FastAPI, Request, BackgroundTasks
 from fastapi.responses import StreamingResponse, JSONResponse
 import requests
 
+
+
 try:
     from transformers import (
         AutoTokenizer,
@@ -196,15 +198,21 @@ class ModelWorker(BaseModelWorker):
         )
 
         logger.info(f"Loading the model {self.model_names} on worker {worker_id} ...")
-        self.model, self.tokenizer = load_model(
-            model_path,
-            device,
-            num_gpus,
-            max_gpu_memory,
-            load_8bit,
-            cpu_offloading,
-            gptq_config,
-        )
+        # self.model, self.tokenizer = load_model(
+        #     model_path,
+        #     device,
+        #     num_gpus,
+        #     max_gpu_memory,
+        #     load_8bit,
+        #     cpu_offloading,
+        #     gptq_config,
+        # )
+        ### temporary fix to use load_in_4bit for llama-2 model
+        self.tokenizer = LlamaTokenizer.from_pretrained(model_path)
+        self.model = AutoModelForCausalLM.from_pretrained(model_path, load_in_4bit=True, device_map="auto")
+        self.model.config.eos_token_id = self.tokenizer.eos_token_id
+        self.model.config.pad_token_id = self.tokenizer.pad_token_id
+
         self.device = device
         if self.tokenizer.pad_token == None:
             self.tokenizer.pad_token = self.tokenizer.eos_token

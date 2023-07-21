@@ -1,3 +1,9 @@
+# Modifications
+* Removed the default long one-shot prompt for fastchat-t5-3b, replaced it with short zero-shot prompt
+* (Not in this repo) Changed the `max_position_embeddings` to 4096 in the `config.json` of the Llama-2-7b-chat-hf model biary
+* Modified the model loading code to incorporate 4-bit quant in `fastchat/serve/model_worker.py`
+
+
 # FastChat
 | [**Demo**](https://chat.lmsys.org/) | [**Arena**](https://arena.lmsys.org) | [**Discord**](https://discord.gg/HSWAKCrnFx) | [**Twitter**](https://twitter.com/lmsysorg) |
 
